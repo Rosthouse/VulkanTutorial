@@ -126,8 +126,10 @@ private:
     void initWindow() {
         glfwInit();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
         window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+
+        glfwSetWindowUserPointer(window, this);
+        glfwSetWindowSizeCallback(window, HelloTriangleApplication::onWindowResized);
     }
 
 
@@ -156,6 +158,8 @@ private:
         createCommandBuffers();
         createSemaphores();
     }
+
+    void recreateSwapchain();
 
     void mainLoop();
 
@@ -200,6 +204,15 @@ private:
     VkShaderModule createShaderModule(const std::vector<char> &code);
 
     void drawFrame();
+
+    void cleanupSwapChain();
+
+    static void onWindowResized(GLFWwindow* window, int width, int height){
+        if(width == 0 || height == 0) return;
+
+        HelloTriangleApplication* app = reinterpret_cast<HelloTriangleApplication*>(glfwGetWindowUserPointer(window));
+        app->recreateSwapchain();
+    }
 };
 
 
