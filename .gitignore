@@ -9,3 +9,5 @@ CMakeFiles/
 Makefile
 *.cbp
 *.cmake
+
+*.spv
