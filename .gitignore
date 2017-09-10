@@ -1,7 +1,17 @@
 .idea/
 .vs/ 
-cmake-build-debug/
 
+# CMake dirs
+cmake-build-debug/
+CMakeFiles/
+
+# CMake files
 CMakeCache.txt
 cmake-build-debug
-CMakeFiles/
+cmake_install.cmake
+
+# Various files
+Makefile
+Vulkan.cbp
+
+
