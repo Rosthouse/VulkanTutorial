@@ -1,6 +1,7 @@
 set(VULKAN_SDK "F:/SDKs/LunarGVulkan/1.0.57.0/Bin32" CACHE FILEPATH "Path to the lunar sdk")
 
 list(APPEND CMAKE_PROGRAM_PATH "F:/SDKs/LunarGVulkan/1.0.57.0/Bin32")
+
 add_custom_command(
         OUTPUT frag.spv
         COMMAND glslangValidator ARGS -V draw_triangle.frag

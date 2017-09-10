@@ -10,8 +10,6 @@ set(Vulkan_Tutorial_VERSION_MINOR 0)
 
 # Configuring file
 
-
-
 # Adding subdirectory
 add_subdirectory(shaders)
 
