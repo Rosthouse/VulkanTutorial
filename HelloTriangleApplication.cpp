@@ -763,8 +763,16 @@ void HelloTriangleApplication::createCommandBuffers() {
 
 void HelloTriangleApplication::drawFrame() {
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphore,
-                          VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(device, swapChain, std::numeric_limits<uint64_t>::max(),
+                                            imageAvailableSemaphore,
+                                            VK_NULL_HANDLE, &imageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        recreateSwapchain();
+        return;
+    } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw std::runtime_error("Failed to acquire swap chain image");
+    }
 
     VkSubmitInfo submitInfo = {};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -800,8 +808,14 @@ void HelloTriangleApplication::drawFrame() {
 
     presentInfoKHR.pResults = nullptr;
 
-    vkQueuePresentKHR(presentQueue, &presentInfoKHR);
+    result = vkQueuePresentKHR(presentQueue, &presentInfoKHR);
 
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        recreateSwapchain();
+        return;
+    } else if (result != VK_SUCCESS) {
+        throw std::runtime_error("Failed to acquire swap chain image");
+    }
     vkQueueWaitIdle(presentQueue);
 }
 
