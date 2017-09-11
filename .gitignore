@@ -12,6 +12,6 @@ cmake_install.cmake
 
 # Various files
 Makefile
-Vulkan.cbp
+*.cbp
 
 

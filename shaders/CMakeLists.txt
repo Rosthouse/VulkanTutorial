@@ -13,6 +13,3 @@ add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/Shaders/vert.spv
         COMMAND glslangValidator ARGS -V ${PROJECT_SOURCE_DIR}/shaders/draw_triangle.vert
 )
-
-# configure_file(shader.frag shader.frag COPYONLY)
-# configure_file(shader.vert shader.vert COPYONLY)
