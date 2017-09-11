@@ -80,9 +80,9 @@ struct SwapChainSupportDetails {
 };
 
 const std::vector<Vertex> vertices = {
-        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, 0.5f},  {0.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
+        {{0.5f, 0.5f}, {1.0f, 1.0f, 0.0f}},
+        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 };
 
 class HelloTriangleApplication {
@@ -132,6 +132,8 @@ private:
     std::vector<VkCommandBuffer> commandBuffers;
     VkSemaphore imageAvailableSemaphore;
     VkSemaphore renderFinishedSemaphore;
+    VkBuffer vertexBuffer;
+    VkDeviceMemory vertexBufferMemory;
 
     void initWindow() {
         glfwInit();
@@ -153,6 +155,8 @@ private:
 
     void createSemaphores();
 
+    void createVertexBuffer();
+
     void initVulkan() {
         createInstance();
         setupDebugCallback();
@@ -165,6 +169,7 @@ private:
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
+        createVertexBuffer();
         createCommandBuffers();
         createSemaphores();
     }
@@ -217,12 +222,14 @@ private:
 
     void cleanupSwapChain();
 
-    static void onWindowResized(GLFWwindow* window, int width, int height){
-        if(width == 0 || height == 0) return;
+    static void onWindowResized(GLFWwindow *window, int width, int height) {
+        if (width == 0 || height == 0) return;
 
-        HelloTriangleApplication* app = reinterpret_cast<HelloTriangleApplication*>(glfwGetWindowUserPointer(window));
+        HelloTriangleApplication *app = reinterpret_cast<HelloTriangleApplication *>(glfwGetWindowUserPointer(window));
         app->recreateSwapchain();
     }
+
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 };
 
 
