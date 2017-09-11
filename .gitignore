@@ -13,5 +13,3 @@ cmake_install.cmake
 # Various files
 Makefile
 *.cbp
-
-
