@@ -14,14 +14,8 @@ set(ENV{GLM_SDK} "F:/SDKs/GLM/glm-0.9.9-a1" CACHE FILEPATH)
 
 
 # Finding libraries
-find_package(VULKAN_PKG REQUIRED)
-
-
-find_library(VULKAN_LIB vulkan-1)
-find_library(
-        GLFW_LIB
-        glfw3
-        HINTS ${GLFW_SDK})
+find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK})
+find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-mingw)
 
 # Configuring file
 
@@ -29,12 +23,12 @@ find_library(
 add_subdirectory(shaders)
 
 # Adding headers to application
-target_include_directories(
-        ${VULKAN_SDK}/Include/
-        ${GLFW_SDK}/include/
-        ${GLM_SDK}/glm/
+include_directories(
+        $ENV{VULKAN_SDK}/Include/
+        $ENV{GLFW_SDK}/include/
+        $ENV{GLM_SDK}/glm/
 )
 
 add_executable(Vulkan ${SOURCE_FILES} ${SHADER_FILES})
-
-target_link_libraries(Vulkan ${GLFW_LIB} ${VULKAN_LIB})
+add_dependencies(Vulkan SHADER)
+target_link_libraries(Vulkan ${VULKAN_LIB} ${GLFW_LIB})
