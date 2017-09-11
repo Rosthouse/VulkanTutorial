@@ -1,11 +1,15 @@
 .idea/
 .vs/ 
-cmake-build-debug/
 
-CMakeCache.txt
-cmake-build-debug
+# CMake dirs
+cmake-build-debug/
 CMakeFiles/
 
+# CMake files
+CMakeCache.txt
+cmake-build-debug
+cmake_install.cmake
+
+# Various files
 Makefile
 *.cbp
-*.cmake
