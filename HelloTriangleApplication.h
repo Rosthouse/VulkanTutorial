@@ -24,14 +24,6 @@
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-const std::vector<const char *> validationLayers = {
-        "VK_LAYER_LUNARG_standard_validation"
-};
-
-const std::vector<const char *> deviceExtensions = {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME
-};
-
 static VkResult CreateDebugReportCallbackEXT(VkInstance instance,
                                              const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,
                                              const VkAllocationCallbacks *pAllocator,
