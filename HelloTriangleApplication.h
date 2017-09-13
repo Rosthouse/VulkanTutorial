@@ -60,11 +60,39 @@ struct SwapChainSupportDetails {
     std::vector<VkPresentModeKHR> presentModes;
 };
 
-const std::vector<Vertex> vertices = {
-        {{0.0f,  -0.5f}, {1.0f, 1.0f, 1.0f}},
-        {{0.5f,  0.5f},  {1.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f},  {0.0f, 0.0f, 1.0f}}
+struct Model {
+    std::vector<Vertex> vertices;
+    std::vector<uint16_t> indices;
+
+    const VkIndexType indexType = VK_INDEX_TYPE_UINT16;
+
+    const size_t verticesCount() {
+        return static_cast<size_t>(vertices.size());
+    }
+
+    const size_t indicesCount() {
+        return static_cast<size_t>(indices.size());
+    }
 };
+
+const std::vector<Vertex> vertices = {
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+};
+
+const std::vector<uint16_t> indices = {
+        0, 1, 2, 2, 3, 0
+};
+
+//const Model model = {
+//        {{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+//                {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+//                   {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+//                      {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}},
+//        {0,     1, 2, 2, 3, 0}
+//};
 
 class HelloTriangleApplication {
 public:
@@ -115,6 +143,8 @@ private:
     VkSemaphore renderFinishedSemaphore;
     VkBuffer vertexBuffer;
     VkDeviceMemory vertexBufferMemory;
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
 
     void initWindow() {
         glfwInit();
@@ -138,6 +168,8 @@ private:
 
     void createVertexBuffer();
 
+    void createIndexBuffer();
+
     void initVulkan() {
         createInstance();
         setupDebugCallback();
@@ -151,6 +183,7 @@ private:
         createFramebuffers();
         createCommandPool();
         createVertexBuffer();
+        createIndexBuffer();
         createCommandBuffers();
         createSemaphores();
     }
