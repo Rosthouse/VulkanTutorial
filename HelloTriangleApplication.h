@@ -80,9 +80,9 @@ struct SwapChainSupportDetails {
 };
 
 const std::vector<Vertex> vertices = {
-        {{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
-        {{0.5f, 0.5f}, {1.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+        {{0.0f,  -0.5f}, {1.0f, 1.0f, 1.0f}},
+        {{0.5f,  0.5f},  {1.0f, 1.0f, 0.0f}},
+        {{-0.5f, 0.5f},  {0.0f, 0.0f, 1.0f}}
 };
 
 class HelloTriangleApplication {
@@ -230,6 +230,18 @@ private:
     }
 
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags,
+                      VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+
+    /**
+     * Copies data from a source buffer to a destination buffer.
+     *
+     * @param srcBuffer
+     * @param dstBuffer
+     * @param size
+     */
+    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 };
 
 
