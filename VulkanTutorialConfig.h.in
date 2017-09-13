@@ -1,0 +1,25 @@
+//
+// Created by Paedda on 13.09.2017.
+//
+
+#ifndef VULKAN_VULKANTUTORIALCONFIG_H
+#define VULKAN_VULKANTUTORIALCONFIG_H
+
+#define  Vulkan_Tutorial_VERSION_MAJOR @Vulkan_Tutorial_VERSION_MAJOR@
+#define  Vulkan_Tutorial_VERSION_MINOR @Vulkan_Tutorial_VERSION_MINOR@
+
+#cmakedefine RH_COLOR_BLENDING
+
+#ifdef NDEBUG
+const bool enableValidationLayers = false;
+#else
+const bool enableValidationLayers = true;
+#endif
+
+#ifdef RH_COLOR_BLENDING
+const bool enableColorBlending = true;
+#else
+const bool enableColorBlending = false;
+#endif
+
+#endif //VULKAN_VULKANTUTORIALCONFIG_H

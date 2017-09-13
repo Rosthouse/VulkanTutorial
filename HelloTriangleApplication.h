@@ -7,6 +7,8 @@
 
 #define GLFW_INCLUDE_VULKAN
 
+#include <VulkanTutorialConfig.h>
+
 #include <GLFW/glfw3.h>
 #include <stdexcept>
 
@@ -19,7 +21,6 @@
 #include <vec3.hpp>
 #include "Vertex.h"
 
-
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
@@ -30,18 +31,6 @@ const std::vector<const char *> validationLayers = {
 const std::vector<const char *> deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
-
-#ifdef NDEBUG
-const bool enableValidationLayers = false;
-#else
-const bool enableValidationLayers = true;
-#endif
-
-#ifdef RH_COLOR_BLENDING
-const bool enableColorBlending = true;
-#else
-const bool enableColorBlending = false;
-#endif
 
 static VkResult CreateDebugReportCallbackEXT(VkInstance instance,
                                              const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,

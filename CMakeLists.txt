@@ -4,7 +4,7 @@ project(Vulkan)
 
 # Configuring application
 set(CMAKE_CXX_STANDARD 14)
-set(SOURCE_FILES main.cpp HelloTriangleApplication.cpp HelloTriangleApplication.h Vertex.h)
+set(SOURCE_FILES main.cpp HelloTriangleApplication.cpp HelloTriangleApplication.h Vertex.h VulkanTutorialConfig.h.in)
 set(Vulkan_Tutorial_VERSION_MAJOR 1)
 set(Vulkan_Tutorial_VERSION_MINOR 0)
 
@@ -18,12 +18,19 @@ find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK})
 find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-mingw)
 
 # Configuring file
+configure_file(
+        ${PROJECT_SOURCE_DIR}/VulkanTutorialConfig.h.in
+        ${PROJECT_BINARY_DIR}/VulkanTutorialConfig.h
+)
+
+option(RH_COLOR_BLENDING "Use Color Blending" OFF)
 
 # Adding subdirectory
 add_subdirectory(shaders)
 
 # Adding headers to application
 include_directories(
+        ${PROJECT_BINARY_DIR}
         $ENV{VULKAN_SDK}/Include/
         $ENV{GLFW_SDK}/include/
         $ENV{GLM_SDK}/glm/
