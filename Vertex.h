@@ -5,10 +5,12 @@
 #ifndef VULKAN_VERTEX_H
 #define VULKAN_VERTEX_H
 
-#include <vec2.hpp>
-#include <vec3.hpp>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <vulkan/vulkan.h>
 #include <array>
+
 
 struct Vertex {
     glm::vec2 pos;
@@ -36,6 +38,27 @@ struct Vertex {
 
         return attributeDescriptions;
     };
+};
+
+struct QueueFamilyIndices {
+    int graphicsFamily = -1;
+    int presentFamily = -1;
+
+    bool isComplete() {
+        return graphicsFamily >= 0 && presentFamily >= 0;
+    }
+};
+
+struct SwapChainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+
+struct UniformBufferObject{
+    glm::mat4 model;
+    glm::mat4 view;
+    glm::mat4 proj;
 };
 
 #endif //VULKAN_VERTEX_H

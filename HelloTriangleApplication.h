@@ -6,6 +6,7 @@
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
 #define GLFW_INCLUDE_VULKAN
+#define GLM_FORCE_RADIANS
 
 #include <VulkanTutorialConfig.h>
 
@@ -17,8 +18,10 @@
 #include <cstring>
 #include <set>
 #include <limits>
-#include <vec2.hpp>
-#include <vec3.hpp>
+#include <chrono>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "Vertex.h"
 
 const int WIDTH = 800;
@@ -45,20 +48,6 @@ static void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCall
     }
 }
 
-struct QueueFamilyIndices {
-    int graphicsFamily = -1;
-    int presentFamily = -1;
-
-    bool isComplete() {
-        return graphicsFamily >= 0 && presentFamily >= 0;
-    }
-};
-
-struct SwapChainSupportDetails {
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
-};
 
 struct Model {
     std::vector<Vertex> vertices;
@@ -77,9 +66,9 @@ struct Model {
 
 const std::vector<Vertex> vertices = {
         {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+        {{0.5f,  -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f,  0.5f},  {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f},  {1.0f, 1.0f, 1.0f}}
 };
 
 const std::vector<uint16_t> indices = {
@@ -134,6 +123,7 @@ private:
     VkExtent2D swapChainExtent;
     std::vector<VkImageView> swapChainImageViews;
     VkRenderPass renderPass;
+    VkDescriptorSetLayout descriptorSetLayout;
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
     std::vector<VkFramebuffer> swapChainFramebuffers;
@@ -145,6 +135,11 @@ private:
     VkDeviceMemory vertexBufferMemory;
     VkBuffer indexBuffer;
     VkDeviceMemory indexBufferMemory;
+    VkBuffer uniformBuffer;
+    VkDeviceMemory uniformBufferMemory;
+    VkDescriptorPool descriptorPool;
+    VkDescriptorSet descriptorSet;
+
 
     void initWindow() {
         glfwInit();
@@ -170,6 +165,14 @@ private:
 
     void createIndexBuffer();
 
+    void createDescriptorSetLayout();
+
+    void createUniformBuffer();
+
+    void createDescriptorPool();
+
+    void createDescriptorSet();
+
     void initVulkan() {
         createInstance();
         setupDebugCallback();
@@ -179,11 +182,15 @@ private:
         createSwapChain();
         createImageViews();
         createRenderPass();
+        createDescriptorSetLayout();
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
         createVertexBuffer();
         createIndexBuffer();
+        createUniformBuffer();
+        createDescriptorPool();
+        createDescriptorSet();
         createCommandBuffers();
         createSemaphores();
     }
@@ -256,6 +263,10 @@ private:
      * @param size
      */
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
+    void updateUniformBuffer();
+
+
 };
 
 
