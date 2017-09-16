@@ -28,6 +28,7 @@ option(RH_COLOR_BLENDING "Use Color Blending" OFF)
 
 # Adding subdirectory
 add_subdirectory(shaders)
+add_subdirectory(images)
 
 # Adding headers to application
 include_directories(

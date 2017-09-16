@@ -1,0 +1,1 @@
+configure_file(lenna.bmp lenna.bmp COPYONLY)
