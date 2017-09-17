@@ -6,14 +6,13 @@
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
 #define GLFW_INCLUDE_VULKAN
-#define GLM_FORCE_RADIANS
-#define STB_IMAGE_IMPLEMENTATION
-
-#include <VulkanTutorialConfig.h>
-
 #include <GLFW/glfw3.h>
-#include <stdexcept>
 
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <stdexcept>
 #include <iostream>
 #include <vector>
 #include <cstring>
@@ -21,11 +20,7 @@
 #include <limits>
 #include <chrono>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <stb_image.h>
-
+#include <VulkanTutorialConfig.h>
 #include "Vertex.h"
 
 const int WIDTH = 800;

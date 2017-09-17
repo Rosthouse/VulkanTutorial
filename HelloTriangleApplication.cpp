@@ -2,9 +2,12 @@
 // Created by Paedda on 04.09.2017.
 //
 
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include <fstream>
 #include "HelloTriangleApplication.h"
-
 
 static std::vector<char> readFile(const std::string &filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);

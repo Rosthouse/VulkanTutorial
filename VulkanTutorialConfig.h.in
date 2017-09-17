@@ -6,7 +6,8 @@
 #define VULKAN_VULKANTUTORIALCONFIG_H
 
 #include <vector>
-#include <vulkan/vulkan.h>
+//#include <vulkan/vulkan.h>
+#include <GLFW/glfw3.h>
 
 #define  Vulkan_Tutorial_VERSION_MAJOR @Vulkan_Tutorial_VERSION_MAJOR@
 #define  Vulkan_Tutorial_VERSION_MINOR @Vulkan_Tutorial_VERSION_MINOR@

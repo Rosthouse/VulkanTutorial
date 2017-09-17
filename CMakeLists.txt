@@ -3,7 +3,7 @@ project(Vulkan)
 
 
 # Configuring application
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 set(SOURCE_FILES main.cpp HelloTriangleApplication.cpp HelloTriangleApplication.h Vertex.h VulkanTutorialConfig.h.in)
 #set(SOURCE_FILES main.cpp HelloTriangleApplication.h VulkanTutorialConfig.h.in)
 set(Vulkan_Tutorial_VERSION_MAJOR 1)
@@ -14,10 +14,15 @@ set(ENV{GLFW_SDK} "F:/SDKs/GLFW/glfw-3.2.1.bin.WIN32" CACHE FILEPATH)
 set(ENV{GLM_SDK} "F:/SDKs/GLM/glm-0.9.8.5" CACHE FILEPATH)
 set(ENV{STB_SDK} "F:/SDKs/stb" CACHE FILEPATH)
 
-
 # Finding libraries
-find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK})
-find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-mingw)
+
+if(MSVC)
+    find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK}/Lib32)
+    find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-vc2015)
+    else()
+    find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK})
+    find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-mingw)
+endif()
 
 # Configuring file
 configure_file(

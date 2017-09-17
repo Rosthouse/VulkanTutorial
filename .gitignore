@@ -1,5 +1,16 @@
+# CLion/InteliJ
 .idea/
-.vs/ 
+
+# VS CODE
+.vs/
+
+# VS Studio
+*.dir
+Win32
+*.vcxproj
+*.vcxproj.filters
+*.sln
+Debug
 
 # CMake dirs
 cmake-build-debug/
