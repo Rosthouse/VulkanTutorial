@@ -7,6 +7,7 @@
 
 #define GLFW_INCLUDE_VULKAN
 #define GLM_FORCE_RADIANS
+#define STB_IMAGE_IMPLEMENTATION
 
 #include <VulkanTutorialConfig.h>
 
@@ -22,6 +23,9 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <stb_image.h>
+
 #include "Vertex.h"
 
 const int WIDTH = 800;

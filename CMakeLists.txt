@@ -12,6 +12,7 @@ set(Vulkan_Tutorial_VERSION_MINOR 0)
 set(ENV{VULKAN_SDK} "F:/SDKs/LunarGVulkan/1.0.57.0" CACHE FILEPATH)
 set(ENV{GLFW_SDK} "F:/SDKs/GLFW/glfw-3.2.1.bin.WIN32" CACHE FILEPATH)
 set(ENV{GLM_SDK} "F:/SDKs/GLM/glm-0.9.8.5" CACHE FILEPATH)
+set(ENV{STB_SDK} "F:/SDKs/stb" CACHE FILEPATH)
 
 
 # Finding libraries
@@ -36,6 +37,7 @@ include_directories(
         $ENV{VULKAN_SDK}/Include/
         $ENV{GLFW_SDK}/include/
         $ENV{GLM_SDK}/glm/
+        $ENV{STB_SDK}
 )
 
 add_executable(Vulkan ${SOURCE_FILES} ${SHADER_FILES})

@@ -2,8 +2,11 @@ list(APPEND CMAKE_PROGRAM_PATH "$ENV{VULKAN_SDK}/Bin32")
 
 add_custom_target(
         SHADER
+        ALL
         DEPENDS frag.spv vert.spv
 )
+
+file(REMOVE ${PROJECT_BINARY_DIR}/shaders/frag.spv ${PROJECT_BINARY_DIR}/shaders/vert.spv)
 
 add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/shaders/frag.spv
