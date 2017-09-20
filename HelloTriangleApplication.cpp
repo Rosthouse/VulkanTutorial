@@ -4,6 +4,7 @@
 
 
 #define STB_IMAGE_IMPLEMENTATION
+
 #include <stb_image.h>
 
 #include <fstream>
@@ -12,7 +13,9 @@
 
 
 #define TINYOBJLOADER_IMPLEMENTATION
+
 #include <tiny_obj_loader.h>
+#include <unordered_map>
 
 static std::vector<char> readFile(const std::string &filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -1109,6 +1112,7 @@ void HelloTriangleApplication::loadModel() {
     }
 
     model = {};
+    std::unordered_map<Vertex, uint32_t> uniqueVertices = {};
 
     for (const auto &shape : shapes) {
         for (const auto &index : shape.mesh.indices) {
@@ -1122,13 +1126,16 @@ void HelloTriangleApplication::loadModel() {
 
             vertex.texCoord = {
                     attrib.texcoords[2 * index.texcoord_index + 0],
-                    1.0f -attrib.texcoords[2 * index.texcoord_index + 1]
+                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
             };
 
             vertex.color = {1.0f, 1.0f, 1.0f};
 
-            model.vertices.push_back(vertex);
-            model.indices.push_back(model.indices.size());
+            if (uniqueVertices.count(vertex) == 0) {
+                uniqueVertices[vertex] == model.vertices.size();
+                model.vertices.push_back(vertex);
+            }
+            model.indices.push_back(uniqueVertices[vertex]);
         }
     }
 }
