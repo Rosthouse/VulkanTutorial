@@ -11,6 +11,7 @@ Win32
 *.vcxproj.filters
 *.sln
 Debug
+Build
 
 # CMake dirs
 cmake-build-debug/
