@@ -1058,6 +1058,7 @@ void HelloTriangleApplication::updateUniformBuffer() {
 
 void HelloTriangleApplication::createDescriptorPool() {
     VkDescriptorPoolSize poolSize = {};
+    poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     poolSize.descriptorCount = 1;
 
     VkDescriptorPoolCreateInfo poolInfo = {};
