@@ -20,6 +20,7 @@ CMakeFiles/
 # CMake files
 CMakeCache.txt
 cmake-build-debug
+cmake-build-release
 cmake_install.cmake
 
 # Various files
