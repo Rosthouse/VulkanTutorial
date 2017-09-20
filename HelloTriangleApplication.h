@@ -6,9 +6,11 @@
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
 #define GLFW_INCLUDE_VULKAN
+
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -147,6 +149,7 @@ private:
 
         glfwSetWindowUserPointer(window, this);
         glfwSetWindowSizeCallback(window, HelloTriangleApplication::onWindowResized);
+        glfwSetKeyCallback(window, HelloTriangleApplication::onKeyPressed);
     }
 
 
@@ -247,6 +250,12 @@ private:
 
         HelloTriangleApplication *app = reinterpret_cast<HelloTriangleApplication *>(glfwGetWindowUserPointer(window));
         app->recreateSwapchain();
+    }
+
+    static void  onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods){
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
     }
 
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
