@@ -6,13 +6,15 @@
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
 #define GLFW_INCLUDE_VULKAN
-#define GLM_FORCE_RADIANS
-
-#include <VulkanTutorialConfig.h>
 
 #include <GLFW/glfw3.h>
-#include <stdexcept>
 
+#define GLM_FORCE_RADIANS
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <stdexcept>
 #include <iostream>
 #include <vector>
 #include <cstring>
@@ -20,8 +22,7 @@
 #include <limits>
 #include <chrono>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <VulkanTutorialConfig.h>
 #include "Vertex.h"
 
 const int WIDTH = 800;
@@ -65,10 +66,10 @@ struct Model {
 };
 
 const std::vector<Vertex> vertices = {
-        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f,  -0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{0.5f,  0.5f},  {0.0f, 0.0f, 1.0f}},
-        {{-0.5f, 0.5f},  {1.0f, 1.0f, 1.0f}}
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
 };
 
 const std::vector<uint16_t> indices = {
@@ -139,6 +140,10 @@ private:
     VkDeviceMemory uniformBufferMemory;
     VkDescriptorPool descriptorPool;
     VkDescriptorSet descriptorSet;
+    VkImage textureImage;
+    VkDeviceMemory textureImageMemory;
+    VkImageView textureImageView;
+    VkSampler textureSampler;
 
 
     void initWindow() {
@@ -148,6 +153,7 @@ private:
 
         glfwSetWindowUserPointer(window, this);
         glfwSetWindowSizeCallback(window, HelloTriangleApplication::onWindowResized);
+        glfwSetKeyCallback(window, HelloTriangleApplication::onKeyPressed);
     }
 
 
@@ -173,6 +179,12 @@ private:
 
     void createDescriptorSet();
 
+    void createTextureImage();
+
+    void createTextureImageView();
+
+    void createTextureSampler();
+
     void initVulkan() {
         createInstance();
         setupDebugCallback();
@@ -186,6 +198,9 @@ private:
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
+        createTextureImage();
+        createTextureImageView();
+        createTextureSampler();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffer();
@@ -239,6 +254,10 @@ private:
 
     VkShaderModule createShaderModule(const std::vector<char> &code);
 
+    VkCommandBuffer beginSingleTimeCommands();
+
+    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+
     void drawFrame();
 
     void cleanupSwapChain();
@@ -248,6 +267,12 @@ private:
 
         HelloTriangleApplication *app = reinterpret_cast<HelloTriangleApplication *>(glfwGetWindowUserPointer(window));
         app->recreateSwapchain();
+    }
+
+    static void  onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods){
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
     }
 
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
@@ -266,7 +291,14 @@ private:
 
     void updateUniformBuffer();
 
+    void createImage(uint32_t texWidth, uint32_t texHeight, VkFormat format, VkImageTiling tilig, VkImageUsageFlags usage,
+                     VkMemoryPropertyFlags memoryProperties, VkImage &image, VkDeviceMemory &imageMemory);
 
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+
+    void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+
+    VkImage createImageView(VkImage image, VkFormat format);
 };
 
 
