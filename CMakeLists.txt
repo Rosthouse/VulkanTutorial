@@ -25,12 +25,14 @@ if(MSVC)
 endif()
 
 # Configuring file
+option(RH_ENABLE_VALIDATION_LAYERS "Use Validation Layers" ON)
+option(RH_COLOR_BLENDING "Use Color Blending" OFF)
+
 configure_file(
         ${PROJECT_SOURCE_DIR}/VulkanTutorialConfig.h.in
         ${PROJECT_BINARY_DIR}/VulkanTutorialConfig.h
 )
 
-option(RH_COLOR_BLENDING "Use Color Blending" OFF)
 
 # Adding subdirectory
 add_subdirectory(shaders)

@@ -12,12 +12,14 @@
 #define  Vulkan_Tutorial_VERSION_MAJOR @Vulkan_Tutorial_VERSION_MAJOR@
 #define  Vulkan_Tutorial_VERSION_MINOR @Vulkan_Tutorial_VERSION_MINOR@
 
+#cmakedefine RH_ENABLE_VALIDATION_LAYERS
 #cmakedefine RH_COLOR_BLENDING
 
-#ifdef NDEBUG
-const bool enableValidationLayers = false;
-#else
+
+#ifdef RH_ENABLE_VALIDATION_LAYERS
 const bool enableValidationLayers = true;
+#else
+const bool enableValidationLayers = false;
 #endif
 
 #ifdef RH_COLOR_BLENDING
