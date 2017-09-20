@@ -1114,8 +1114,8 @@ void HelloTriangleApplication::loadModel() {
     model = {};
     std::unordered_map<Vertex, uint32_t> uniqueVertices = {};
 
-    for (const auto &shape : shapes) {
-        for (const auto &index : shape.mesh.indices) {
+    for (const auto& shape : shapes) {
+        for (const auto& index : shape.mesh.indices) {
             Vertex vertex = {};
 
             vertex.pos = {
@@ -1132,9 +1132,10 @@ void HelloTriangleApplication::loadModel() {
             vertex.color = {1.0f, 1.0f, 1.0f};
 
             if (uniqueVertices.count(vertex) == 0) {
-                uniqueVertices[vertex] == model.vertices.size();
+                uniqueVertices[vertex] = static_cast<uint32_t>(model.vertices.size());
                 model.vertices.push_back(vertex);
             }
+
             model.indices.push_back(uniqueVertices[vertex]);
         }
     }
