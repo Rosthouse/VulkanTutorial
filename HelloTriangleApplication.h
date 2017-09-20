@@ -140,6 +140,8 @@ private:
     VkDeviceMemory uniformBufferMemory;
     VkDescriptorPool descriptorPool;
     VkDescriptorSet descriptorSet;
+    VkImage textureImage;
+    VkDeviceMemory textureImageMemory;
 
 
     void initWindow() {
@@ -175,6 +177,8 @@ private:
 
     void createDescriptorSet();
 
+    void createTextureImage();
+
     void initVulkan() {
         createInstance();
         setupDebugCallback();
@@ -188,6 +192,7 @@ private:
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
+        createTextureImage();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffer();
@@ -241,6 +246,10 @@ private:
 
     VkShaderModule createShaderModule(const std::vector<char> &code);
 
+    VkCommandBuffer beginSingleTimeCommands();
+
+    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+
     void drawFrame();
 
     void cleanupSwapChain();
@@ -274,7 +283,12 @@ private:
 
     void updateUniformBuffer();
 
+    void createImage(uint32_t texWidth, uint32_t texHeight, VkFormat format, VkImageTiling tilig, VkImageUsageFlags usage,
+                     VkMemoryPropertyFlags memoryProperties, VkImage &image, VkDeviceMemory &imageMemory);
 
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+
+    void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 };
 
 
