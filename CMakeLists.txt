@@ -13,16 +13,17 @@ set(ENV{VULKAN_SDK} "F:/SDKs/LunarGVulkan/1.0.57.0" CACHE PATH)
 set(ENV{GLFW_SDK} "F:/SDKs/GLFW/glfw-3.2.1.bin.WIN32" CACHE PATH)
 set(ENV{GLM_SDK} "F:/SDKs/GLM/glm-0.9.8.5" CACHE PATH)
 set(ENV{STB_SDK} "F:/SDKs/stb" CACHE PATH)
+set(ENV{TOL_SDK} "F:/SDKs/tinyobjloader" CACHE PATH)
 
 # Finding libraries
 
-if(MSVC)
+if (MSVC)
     find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK}/Lib32)
     find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-vc2015)
-    else()
+else ()
     find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK})
     find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-mingw)
-endif()
+endif ()
 
 # Configuring file
 option(RH_ENABLE_VALIDATION_LAYERS "Use Validation Layers" ON)
@@ -45,6 +46,7 @@ include_directories(
         $ENV{GLFW_SDK}/include/
         $ENV{GLM_SDK}/glm/
         $ENV{STB_SDK}
+        $ENV{TOL_SDK}
 )
 
 add_executable(Vulkan ${SOURCE_FILES} ${SHADER_FILES})
