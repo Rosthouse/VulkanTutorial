@@ -1,0 +1,1 @@
+configure_file(chalet.obj chalet.obj COPYONLY)

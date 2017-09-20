@@ -6,14 +6,15 @@
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
 #define GLFW_INCLUDE_VULKAN
-
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 #include <stdexcept>
 #include <iostream>
@@ -28,6 +29,10 @@
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
+
+const std::string MODEL_PATH = "models/chalet.obj";
+const std::string TEXTURE_PATH = "textures/chalet.jpg";
+
 
 static VkResult CreateDebugReportCallbackEXT(VkInstance instance,
                                              const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,
@@ -49,47 +54,6 @@ static void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCall
         func(instance, callback, pAllocator);
     }
 }
-
-
-struct Model {
-    std::vector<Vertex> vertices;
-    std::vector<uint16_t> indices;
-
-    const VkIndexType indexType = VK_INDEX_TYPE_UINT16;
-
-    const size_t verticesCount() {
-        return static_cast<size_t>(vertices.size());
-    }
-
-    const size_t indicesCount() {
-        return static_cast<size_t>(indices.size());
-    }
-};
-
-const std::vector<Vertex> vertices = {
-        {{-0.5f, -0.5f, 0.0f},  {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f,  -0.5f, 0.0f},  {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f,  0.5f,  0.0f},  {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f,  0.0f},  {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f,  -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f,  0.5f,  -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f,  -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-};
-
-const std::vector<uint16_t> indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4
-};
-
-//const Model model = {
-//        {{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-//                {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-//                   {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-//                      {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}},
-//        {0,     1, 2, 2, 3, 0}
-//};
 
 class HelloTriangleApplication {
 public:
@@ -154,6 +118,8 @@ private:
     VkImage depthImage;
     VkDeviceMemory depthImageMemory;
     VkImageView depthImageView;
+	Model model;
+
 
     void initWindow() {
         glfwInit();
@@ -213,6 +179,7 @@ private:
         createTextureImage();
         createTextureImageView();
         createTextureSampler();
+		loadModel();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffer();
@@ -303,6 +270,8 @@ private:
 
     void updateUniformBuffer();
 
+	void loadModel();
+
     void
     createImage(uint32_t texWidth, uint32_t texHeight, VkFormat format, VkImageTiling tilig, VkImageUsageFlags usage,
                 VkMemoryPropertyFlags memoryProperties, VkImage &image, VkDeviceMemory &imageMemory);
@@ -315,6 +284,7 @@ private:
 
     VkFormat
     findSupportedFormat(const std::vector<VkFormat> &pVector, VkImageTiling tiling, VkFormatFeatureFlags features);
+
 
     VkFormat findDepthFormat() {
         return findSupportedFormat({

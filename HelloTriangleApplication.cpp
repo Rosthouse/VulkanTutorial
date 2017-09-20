@@ -4,7 +4,6 @@
 
 
 #define STB_IMAGE_IMPLEMENTATION
-
 #include <stb_image.h>
 
 #include <fstream>
@@ -798,7 +797,7 @@ void HelloTriangleApplication::createCommandBuffers() {
         VkDeviceSize offsets[] = {0};
         vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
 
-        vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+        vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
                                 &descriptorSet, 0, nullptr);
@@ -1094,6 +1093,32 @@ void HelloTriangleApplication::updateUniformBuffer() {
 
 }
 
+void HelloTriangleApplication::loadModel()
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string err;
+		
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, MODEL_PATH.c_str())) {
+		throw std::runtime_error(err);
+	}
+
+	for (const auto& shape : shapes) {
+		for (const auto& index : shape.mesh.indices) {
+			Vertex v = {};
+
+			vertex.pos = {
+				attrib.vertices
+			}
+
+
+			model.vertices.push_back(v);
+			model.indices.push_back(model.indices.size());
+		}
+	}
+}
+
 void HelloTriangleApplication::createDescriptorPool() {
     std::array<VkDescriptorPoolSize, 2> poolSizes = {};
     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -1169,7 +1194,7 @@ void HelloTriangleApplication::createDescriptorSet() {
 
 void HelloTriangleApplication::createTextureImage() {
     int texWidth, texHeight, texChannels;
-    stbi_uc *pixels = stbi_load("images/lenna.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc *pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texHeight * texWidth * 4;
     if (!pixels) {
         throw std::runtime_error("Failed to load texture");

@@ -45,6 +45,13 @@ struct Vertex {
     };
 };
 
+struct Model {
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+	VkBuffer vertexBuffer;
+	VkDeviceMemory vertexBufferMemory;
+};
+
 struct QueueFamilyIndices {
     int graphicsFamily = -1;
     int presentFamily = -1;

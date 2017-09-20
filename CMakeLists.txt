@@ -37,7 +37,8 @@ configure_file(
 
 # Adding subdirectory
 add_subdirectory(shaders)
-add_subdirectory(images)
+add_subdirectory(textures)
+add_subdirectory(models)
 
 # Adding headers to application
 include_directories(
