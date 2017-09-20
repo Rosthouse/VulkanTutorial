@@ -142,6 +142,8 @@ private:
     VkDescriptorSet descriptorSet;
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
+    VkImageView textureImageView;
+    VkSampler textureSampler;
 
 
     void initWindow() {
@@ -179,6 +181,10 @@ private:
 
     void createTextureImage();
 
+    void createTextureImageView();
+
+    void createTextureSampler();
+
     void initVulkan() {
         createInstance();
         setupDebugCallback();
@@ -193,6 +199,8 @@ private:
         createFramebuffers();
         createCommandPool();
         createTextureImage();
+        createTextureImageView();
+        createTextureSampler();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffer();
@@ -289,6 +297,8 @@ private:
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+
+    VkImage createImageView(VkImage image, VkFormat format);
 };
 
 
