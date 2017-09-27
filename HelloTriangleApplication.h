@@ -6,10 +6,14 @@
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
 #define GLFW_INCLUDE_VULKAN
+
 #include <GLFW/glfw3.h>
+
+#include <vulkan/vulkan.hpp>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -32,26 +36,28 @@ const std::string MODEL_PATH = "models/chalet.obj";
 const std::string TEXTURE_PATH = "textures/chalet.jpg";
 
 
-static VkResult CreateDebugReportCallbackEXT(VkInstance instance,
-                                             const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,
-                                             const VkAllocationCallbacks *pAllocator,
-                                             VkDebugReportCallbackEXT *pCallback) {
-    auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
-    if (func != nullptr) {
-        return func(instance, pCreateInfo, pAllocator, pCallback);
-    } else {
-        return VK_ERROR_EXTENSION_NOT_PRESENT;
-    }
-}
+//static vk::Result CreateDebugReportCallbackEXT(vk::Instance instance,
+//                                             const vk::DebugReportCallbackCreateInfoEXT *pCreateInfo,
+//                                             const vk::AllocationCallbacks *pAllocator,
+//                                             vk::DebugReportCallbackEXT *pCallback) {
+//
+//    instance.createDebugReportCallbackEXT(pCreateInfo, pAllocator, pCallback);
+//    auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
+//    if (func != nullptr) {
+//        return func(instance, pCreateInfo, pAllocator, pCallback);
+//    } else {
+//        return VK_ERROR_EXTENSION_NOT_PRESENT;
+//    }
+//}
 
-static void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback,
-                                          const VkAllocationCallbacks *pAllocator) {
-    auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(instance,
-                                                                            "vkDestroyDebugReportCallbackEXT");
-    if (func != nullptr) {
-        func(instance, callback, pAllocator);
-    }
-}
+//static void DestroyDebugReportCallbackEXT(vk::Instance instance, vk::DebugReportCallbackEXT callback,
+//                                          const vk::AllocationCallbacks *pAllocator) {
+//    auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(instance,
+//                                                                            "vkDestroyDebugReportCallbackEXT");
+//    if (func != nullptr) {
+//        func(instance, callback, pAllocator);
+//    }
+//}
 
 class HelloTriangleApplication {
 public:
@@ -63,9 +69,9 @@ public:
         cleanup();
     }
 
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-            VkDebugReportFlagsEXT flags,
-            VkDebugReportObjectTypeEXT objType,
+    static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
+            vk::DebugReportFlagsEXT flags,
+            vk::DebugReportObjectTypeEXT objType,
             uint64_t obj,
             size_t location,
             int32_t code,
@@ -74,49 +80,50 @@ public:
             void *userData) {
         std::cerr << "validation layer: " << msg << std::endl;
 
-        return VK_FALSE;
+        return false;
+//        return VK_FALSE;
     }
 
 
 private:
     GLFWwindow *window;
-    VkInstance instance;
-    VkDebugReportCallbackEXT callback;
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-    VkDevice device;
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
-    VkSurfaceKHR surface;
-    VkSwapchainKHR swapChain;
-    std::vector<VkImage> swapChainImages;
-    VkFormat swapChainImageFormat;
-    VkExtent2D swapChainExtent;
-    std::vector<VkImageView> swapChainImageViews;
-    VkRenderPass renderPass;
-    VkDescriptorSetLayout descriptorSetLayout;
-    VkPipelineLayout pipelineLayout;
-    VkPipeline graphicsPipeline;
-    std::vector<VkFramebuffer> swapChainFramebuffers;
-    VkCommandPool commandPool;
-    std::vector<VkCommandBuffer> commandBuffers;
-    VkSemaphore imageAvailableSemaphore;
-    VkSemaphore renderFinishedSemaphore;
-    VkBuffer vertexBuffer;
-    VkDeviceMemory vertexBufferMemory;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
-    VkBuffer uniformBuffer;
-    VkDeviceMemory uniformBufferMemory;
-    VkDescriptorPool descriptorPool;
-    VkDescriptorSet descriptorSet;
-    VkImage textureImage;
-    VkDeviceMemory textureImageMemory;
-    VkImageView textureImageView;
-    VkSampler textureSampler;
-    VkImage depthImage;
-    VkDeviceMemory depthImageMemory;
-    VkImageView depthImageView;
-	Model model;
+    vk::Instance instance;
+    vk::DebugReportCallbackEXT callback;
+    vk::PhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    vk::Device device;
+    vk::Queue graphicsQueue;
+    vk::Queue presentQueue;
+    vk::SurfaceKHR surface;
+    vk::SwapchainKHR swapChain;
+    std::vector<vk::Image> swapChainImages;
+    vk::Format swapChainImageFormat;
+    vk::Extent2D swapChainExtent;
+    std::vector<vk::ImageView> swapChainImageViews;
+    vk::RenderPass renderPass;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    vk::PipelineLayout pipelineLayout;
+    vk::Pipeline graphicsPipeline;
+    std::vector<vk::Framebuffer> swapChainFramebuffers;
+    vk::CommandPool commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    vk::Semaphore imageAvailableSemaphore;
+    vk::Semaphore renderFinishedSemaphore;
+    vk::Buffer vertexBuffer;
+    vk::DeviceMemory vertexBufferMemory;
+    vk::Buffer indexBuffer;
+    vk::DeviceMemory indexBufferMemory;
+    vk::Buffer uniformBuffer;
+    vk::DeviceMemory uniformBufferMemory;
+    vk::DescriptorPool descriptorPool;
+    vk::DescriptorSet descriptorSet;
+    vk::Image textureImage;
+    vk::DeviceMemory textureImageMemory;
+    vk::ImageView textureImageView;
+    vk::Sampler textureSampler;
+    vk::Image depthImage;
+    vk::DeviceMemory depthImageMemory;
+    vk::ImageView depthImageView;
+    Model model;
 
 
     void initWindow() {
@@ -177,7 +184,7 @@ private:
         createTextureImage();
         createTextureImageView();
         createTextureSampler();
-		loadModel();
+        loadModel();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffer();
@@ -215,25 +222,26 @@ private:
 
     void pickPhysicalDevice();
 
-    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+    bool checkDeviceExtensionSupport(vk::PhysicalDevice device);
 
-    bool isDeviceSuitable(VkPhysicalDevice device);
+    bool isDeviceSuitable(vk::PhysicalDevice device);
 
-    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+    QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device);
 
-    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+    SwapChainSupportDetails querySwapChainSupport(vk::PhysicalDevice device);
 
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &avaiableFormats);
+    vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR> &avaiableFormats);
 
-    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
+    vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR> availablePresentModes);
 
-    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+    vk::Extent2D chooseSwapExtent(const vk::SurfaceCapabilitiesKHR &capabilities);
 
-    VkShaderModule createShaderModule(const std::vector<char> &code);
 
-    VkCommandBuffer beginSingleTimeCommands();
+    vk::ShaderModule createShaderModule(const std::vector<char> &code);
 
-    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+    vk::CommandBuffer beginSingleTimeCommands();
+
+    void endSingleTimeCommands(vk::CommandBuffer commandBuffer);
 
     void drawFrame();
 
@@ -252,10 +260,10 @@ private:
         }
     }
 
-    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties);
 
-    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags,
-                      VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+    void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usageFlags, vk::MemoryPropertyFlags memoryPropertyFlags,
+                      vk::Buffer &buffer, vk::DeviceMemory &bufferMemory);
 
     /**
      * Copies data from a source buffer to a destination buffer.
@@ -264,37 +272,41 @@ private:
      * @param dstBuffer
      * @param size
      */
-    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+    void copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size);
 
     void updateUniformBuffer();
 
-	void loadModel();
+    void loadModel();
 
     void
-    createImage(uint32_t texWidth, uint32_t texHeight, VkFormat format, VkImageTiling tilig, VkImageUsageFlags usage,
-                VkMemoryPropertyFlags memoryProperties, VkImage &image, VkDeviceMemory &imageMemory);
+    createImage(uint32_t texWidth, uint32_t texHeight, vk::Format format, vk::ImageTiling tilig,
+                vk::ImageUsageFlags usage,
+                vk::MemoryPropertyFlags memoryProperties, vk::Image &image, vk::DeviceMemory &imageMemory);
 
-    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+    void
+    transitionImageLayout(vk::Image image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
 
-    void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+    void copyBufferToImage(vk::Buffer buffer, vk::Image image, uint32_t width, uint32_t height);
 
-    VkImage createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+    vk::Image createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
 
-    VkFormat
-    findSupportedFormat(const std::vector<VkFormat> &pVector, VkImageTiling tiling, VkFormatFeatureFlags features);
+    vk::Format
+    findSupportedFormat(const std::vector<vk::Format> &pVector, vk::ImageTiling tiling,
+                        vk::FormatFeatureFlags features);
 
 
-    VkFormat findDepthFormat() {
+    vk::Format findDepthFormat() {
         return findSupportedFormat({
-                                           VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT,
-                                           VK_FORMAT_D24_UNORM_S8_UINT
+                                           vk::Format::eD32Sfloat,
+                                           vk::Format::eD32SfloatS8Uint,
+                                           vk::Format::eD24UnormS8Uint,
                                    },
-                                   VK_IMAGE_TILING_OPTIMAL,
-                                   VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+                                   vk::ImageTiling::eOptimal,
+                                   vk::FormatFeatureFlagBits::eDepthStencilAttachment);
     }
 
-    bool hasStencilComponent(VkFormat format) {
-        return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
+    bool hasStencilComponent(vk::Format format) {
+        return format == vk::Format::eD32Sfloat || format == vk::Format::eD32SfloatS8Uint;
     }
 };
 
