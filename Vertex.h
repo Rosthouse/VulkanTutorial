@@ -5,7 +5,6 @@
 #ifndef VULKAN_VERTEX_H
 #define VULKAN_VERTEX_H
 
-
 #include <glm/glm.hpp>
 #include <glm/gtx/hash.hpp>
 #include <array>

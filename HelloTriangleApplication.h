@@ -1,22 +1,18 @@
-//
-// Created by Paedda on 04.09.2017.
-//
-
 #ifndef VULKAN_HELLOTRIANGLEAPPLICATION_H
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
 #define GLFW_INCLUDE_VULKAN
-
 #include <GLFW/glfw3.h>
 
 #include <vulkan/vulkan.hpp>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <VulkanTutorialConfig.h>
+#include "Vertex.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -26,38 +22,19 @@
 #include <limits>
 #include <chrono>
 
-#include <VulkanTutorialConfig.h>
-#include "Vertex.h"
-
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
 const std::string MODEL_PATH = "models/chalet.obj";
 const std::string TEXTURE_PATH = "textures/chalet.jpg";
 
+const std::vector<const char *> validationLayers = {
+	"VK_LAYER_LUNARG_standard_validation"
+};
 
-//static vk::Result CreateDebugReportCallbackEXT(vk::Instance instance,
-//                                             const vk::DebugReportCallbackCreateInfoEXT *pCreateInfo,
-//                                             const vk::AllocationCallbacks *pAllocator,
-//                                             vk::DebugReportCallbackEXT *pCallback) {
-//
-//    instance.createDebugReportCallbackEXT(pCreateInfo, pAllocator, pCallback);
-//    auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
-//    if (func != nullptr) {
-//        return func(instance, pCreateInfo, pAllocator, pCallback);
-//    } else {
-//        return VK_ERROR_EXTENSION_NOT_PRESENT;
-//    }
-//}
-
-//static void DestroyDebugReportCallbackEXT(vk::Instance instance, vk::DebugReportCallbackEXT callback,
-//                                          const vk::AllocationCallbacks *pAllocator) {
-//    auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(instance,
-//                                                                            "vkDestroyDebugReportCallbackEXT");
-//    if (func != nullptr) {
-//        func(instance, callback, pAllocator);
-//    }
-//}
+const std::vector<const char *> deviceExtensions = {
+	VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
 
 class HelloTriangleApplication {
 public:
@@ -69,9 +46,9 @@ public:
         cleanup();
     }
 
-    static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
-            vk::DebugReportFlagsEXT flags,
-            vk::DebugReportObjectTypeEXT objType,
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+            VkDebugReportFlagsEXT flags,
+            VkDebugReportObjectTypeEXT objType,
             uint64_t obj,
             size_t location,
             int32_t code,
@@ -81,14 +58,13 @@ public:
         std::cerr << "validation layer: " << msg << std::endl;
 
         return false;
-//        return VK_FALSE;
     }
 
 
 private:
     GLFWwindow *window;
     vk::Instance instance;
-    vk::DebugReportCallbackEXT callback;
+    VkDebugReportCallbackEXT callback;
     vk::PhysicalDevice physicalDevice = VK_NULL_HANDLE;
     vk::Device device;
     vk::Queue graphicsQueue;
@@ -218,7 +194,7 @@ private:
 
     bool checkValidationLayerSupport();
 
-    void setupDebugCallback();
+	void setupDebugCallback();
 
     void pickPhysicalDevice();
 
@@ -288,7 +264,7 @@ private:
 
     void copyBufferToImage(vk::Buffer buffer, vk::Image image, uint32_t width, uint32_t height);
 
-    vk::Image createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
+    vk::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
 
     vk::Format
     findSupportedFormat(const std::vector<vk::Format> &pVector, vk::ImageTiling tiling,
