@@ -554,9 +554,6 @@ void HelloTriangleApplication::cleanup()
 	device.destroyDescriptorPool(descriptorPool);
 	device.destroyDescriptorSetLayout(descriptorSetLayout);
 
-	device.destroyDescriptorPool(descriptorPool);
-	device.destroyDescriptorSetLayout(descriptorSetLayout);
-
 	device.destroyBuffer(uniformBuffer);
 	device.freeMemory(uniformBufferMemory);
 
@@ -585,7 +582,6 @@ void HelloTriangleApplication::mainLoop()
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
-
 		updateUniformBuffer();
 		drawFrame();
 	}

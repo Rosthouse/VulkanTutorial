@@ -110,6 +110,7 @@ private:
         glfwSetWindowUserPointer(window, this);
         glfwSetWindowSizeCallback(window, HelloTriangleApplication::onWindowResized);
         glfwSetKeyCallback(window, HelloTriangleApplication::onKeyPressed);
+		glfwSetWindowCloseCallback(window, HelloTriangleApplication::onWindowClose);
     }
 
 
@@ -229,6 +230,12 @@ private:
         HelloTriangleApplication *app = reinterpret_cast<HelloTriangleApplication *>(glfwGetWindowUserPointer(window));
         app->recreateSwapchain();
     }
+
+	static void onWindowClose(GLFWwindow *window)
+    {
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+
 
     static void onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
