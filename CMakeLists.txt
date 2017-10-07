@@ -18,7 +18,7 @@ set(ENV{TOL_SDK} "F:/SDKs/tinyobjloader" CACHE PATH)
 # Finding libraries
 
 if (MSVC)
-    find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK}/Lib32)
+    find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK}/Source/lib)
     find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-vc2015)
 else ()
     find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK})
