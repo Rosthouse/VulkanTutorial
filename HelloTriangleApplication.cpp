@@ -262,6 +262,7 @@ void HelloTriangleApplication::createSurface()
 	{
 		throw std::runtime_error("Failed to create window surface");
 	}
+	surface = vk::SurfaceKHR(localSurface);
 }
 
 void HelloTriangleApplication::createLogicalDevice()
@@ -311,14 +312,11 @@ void HelloTriangleApplication::createLogicalDevice()
 
 	if (physicalDevice.createDevice(&createInfo, nullptr, &device) != vk::Result::eSuccess)
 	{
-		//    if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device!");
 	}
 
 	device.getQueue(indices.graphicsFamily, 0, &graphicsQueue);
 	device.getQueue(indices.presentFamily, 0, &presentQueue);
-	//    vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
-	//    vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
 }
 
 QueueFamilyIndices HelloTriangleApplication::findQueueFamilies(vk::PhysicalDevice device)
@@ -327,10 +325,8 @@ QueueFamilyIndices HelloTriangleApplication::findQueueFamilies(vk::PhysicalDevic
 
 	unsigned int queueFamilyCount = 0;
 	device.getQueueFamilyProperties(&queueFamilyCount, nullptr);
-	//    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
 	std::vector<vk::QueueFamilyProperties> queueFamilies(queueFamilyCount);
-	//    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 	device.getQueueFamilyProperties(&queueFamilyCount, queueFamilies.data());
 
 	int i = 0;
@@ -342,7 +338,6 @@ QueueFamilyIndices HelloTriangleApplication::findQueueFamilies(vk::PhysicalDevic
 		}
 
 		vk::Bool32 presentSupport = false;
-		//        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
 		device.getSurfaceSupportKHR(i, surface, &presentSupport);
 
 		if (queueFamily.queueCount > 0 && presentSupport)
@@ -880,6 +875,7 @@ void HelloTriangleApplication::createCommandPool()
 
 void HelloTriangleApplication::createCommandBuffers()
 {
+	commandBuffers.resize(swapChainFramebuffers.size());
 	vk::CommandBufferAllocateInfo allocInfo = {};
 	allocInfo.commandPool = commandPool;
 	allocInfo.level = vk::CommandBufferLevel::ePrimary;
@@ -935,7 +931,7 @@ void HelloTriangleApplication::drawFrame()
 		recreateSwapchain();
 		return;
 	}
-	else if (imageIndex.result != vk::Result::eSuboptimalKHR)
+	else if (imageIndex.result != vk::Result::eSuccess && imageIndex.result != vk::Result::eSuboptimalKHR)
 	{
 		throw std::runtime_error("Failed to acquire swap chain image");
 	}
@@ -1041,8 +1037,7 @@ void HelloTriangleApplication::createVertexBuffer()
 
 
 	void* data;
-	vk::MemoryMapFlags bits; //TODO: Not sure if this works
-	device.mapMemory(stagingBufferMemory, 0, vk::DeviceSize(0), bits, &data);
+	device.mapMemory(stagingBufferMemory, 0,bufferSize, vk::MemoryMapFlags(), &data);
 	memcpy(data, model.vertices.data(), (size_t)bufferSize);
 	device.unmapMemory(stagingBufferMemory);
 
@@ -1116,14 +1111,9 @@ void HelloTriangleApplication::createIndexBuffer()
 	             vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, stagingBuffer,
 	             stagingBufferMemory);
 
-	//void* data;
-	//device.mapMemory(stagingBufferMemory, 0, bufferSize, data);
-
-	ResultValueType<void*>::type result = device.mapMemory(stagingBufferMemory, 0, 0);
-
-
-	device.mapMemory(stagingBufferMemory, 0, bufferSize, vk::MemoryMapFlags(), &result);
-	memcpy(result, model.indices.data(), (size_t)bufferSize);
+	void* data;
+	device.mapMemory(stagingBufferMemory, 0, bufferSize, vk::MemoryMapFlags(), &data);
+	memcpy(data, model.indices.data(), (size_t)bufferSize);
 	device.unmapMemory(stagingBufferMemory);
 
 	createBuffer(bufferSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer,
@@ -1186,7 +1176,7 @@ void HelloTriangleApplication::updateUniformBuffer()
 	ubo.proj[1][1] *= -1;
 
 	void* data;
-	device.mapMemory(uniformBufferMemory, 0, 0);
+	device.mapMemory(uniformBufferMemory, 0, sizeof(ubo), vk::MemoryMapFlags(), &data);
 	memcpy(data, &ubo, sizeof(ubo));
 	device.unmapMemory(uniformBufferMemory);
 }
@@ -1340,7 +1330,7 @@ HelloTriangleApplication::createImage(uint32_t texWidth, uint32_t texHeight, vk:
                                       vk::ImageUsageFlags usage, vk::MemoryPropertyFlags memoryProperties,
                                       vk::Image& image, vk::DeviceMemory& imageMemory)
 {
-	vk::ImageCreateInfo imageInfo = {};
+	vk::ImageCreateInfo imageInfo;
 	imageInfo.imageType = vk::ImageType::e2D;
 	imageInfo.extent.width = texWidth;
 	imageInfo.extent.height = texHeight;
@@ -1362,8 +1352,7 @@ HelloTriangleApplication::createImage(uint32_t texWidth, uint32_t texHeight, vk:
 
 	vk::MemoryAllocateInfo allocateInfo = {};
 	allocateInfo.allocationSize = memoryRequirements.size;
-	allocateInfo.memoryTypeIndex = findMemoryType(memoryRequirements.memoryTypeBits,
-	                                              memoryProperties);
+	allocateInfo.memoryTypeIndex = findMemoryType(memoryRequirements.memoryTypeBits,  memoryProperties);
 	device.allocateMemory(&allocateInfo, nullptr, &imageMemory);
 	device.bindImageMemory(image, imageMemory, 0);
 }
@@ -1406,13 +1395,27 @@ void HelloTriangleApplication::transitionImageLayout(vk::Image image, vk::Format
 {
 	vk::CommandBuffer commandBuffer = beginSingleTimeCommands();
 
-	vk::ImageMemoryBarrier barrier = {};
+	vk::ImageMemoryBarrier barrier;
 	barrier.oldLayout = oldLayout;
 	barrier.newLayout = newLayout;
 	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 	barrier.image = image;
-	barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+
+	if (newLayout == vk::ImageLayout::eDepthStencilAttachmentOptimal)
+	{
+		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eDepth;
+
+		if (hasStencilComponent(format))
+		{
+			barrier.subresourceRange.aspectMask |= vk::ImageAspectFlagBits::eStencil;
+		}
+	}
+	else
+	{
+		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	}
+
 	barrier.subresourceRange.baseMipLevel = 0;
 	barrier.subresourceRange.levelCount = 1;
 	barrier.subresourceRange.baseArrayLayer = 0;
@@ -1420,15 +1423,6 @@ void HelloTriangleApplication::transitionImageLayout(vk::Image image, vk::Format
 
 	vk::PipelineStageFlags sourceStage;
 	vk::PipelineStageFlags destinationStage;
-
-	if (newLayout == vk::ImageLayout::eDepthStencilAttachmentOptimal)
-	{
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eDepth;
-		if (hasStencilComponent(format))
-		{
-			barrier.subresourceRange.aspectMask |= vk::ImageAspectFlagBits::eStencil;
-		}
-	}
 
 	if (oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal)
 	{
@@ -1438,8 +1432,7 @@ void HelloTriangleApplication::transitionImageLayout(vk::Image image, vk::Format
 		sourceStage = vk::PipelineStageFlagBits::eTopOfPipe;
 		destinationStage = vk::PipelineStageFlagBits::eTransfer;
 	}
-	else if (oldLayout == vk::ImageLayout::eTransferDstOptimal &&
-		newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
+	else if (oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
 	{
 		barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 		barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
@@ -1447,12 +1440,11 @@ void HelloTriangleApplication::transitionImageLayout(vk::Image image, vk::Format
 		sourceStage = vk::PipelineStageFlagBits::eTransfer;
 		destinationStage = vk::PipelineStageFlagBits::eFragmentShader;
 	}
-	else if (oldLayout == vk::ImageLayout::eUndefined &&
-		newLayout == vk::ImageLayout::eDepthStencilAttachmentOptimal)
+	else if (oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eDepthStencilAttachmentOptimal)
 	{
 		barrier.srcAccessMask = vk::AccessFlags();
-		barrier.dstAccessMask =
-			vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
+		barrier.dstAccessMask = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::
+			eDepthStencilAttachmentWrite;
 
 		sourceStage = vk::PipelineStageFlagBits::eTopOfPipe;
 		destinationStage = vk::PipelineStageFlagBits::eEarlyFragmentTests;
@@ -1462,8 +1454,19 @@ void HelloTriangleApplication::transitionImageLayout(vk::Image image, vk::Format
 		throw std::invalid_argument("unsupported layout transition!");
 	}
 
-	commandBuffer.pipelineBarrier(sourceStage, destinationStage, vk::DependencyFlags(), 0, nullptr, 0, nullptr, 1,
-	                              &barrier);
+	commandBuffer.pipelineBarrier(sourceStage, destinationStage,
+	                              vk::DependencyFlags(),
+	                              0, nullptr,
+	                              0, nullptr,
+	                              1, &barrier);
+	/*vkCmdPipelineBarrier(
+		commandBuffer,
+		sourceStage, destinationStage,
+		0,
+		0, nullptr,
+		0, nullptr,
+		1, &barrier
+	);*/
 
 	endSingleTimeCommands(commandBuffer);
 }
@@ -1546,12 +1549,23 @@ void HelloTriangleApplication::createTextureSampler()
 void HelloTriangleApplication::createDepthResources()
 {
 	vk::Format depthFormat = findDepthFormat();
-	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, vk::ImageTiling::eOptimal,
-	            vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, depthImage,
-	            depthImageMemory);
+	createImage(
+		swapChainExtent.width,
+		swapChainExtent.height,
+		depthFormat,
+		vk::ImageTiling::eOptimal,
+		vk::ImageUsageFlagBits::eDepthStencilAttachment,
+		vk::MemoryPropertyFlagBits::eDeviceLocal,
+		depthImage,
+		depthImageMemory
+	);
 	depthImageView = createImageView(depthImage, depthFormat, vk::ImageAspectFlagBits::eDepth);
-	transitionImageLayout(depthImage, depthFormat, vk::ImageLayout::eUndefined,
-	                      vk::ImageLayout::eDepthStencilAttachmentOptimal);
+	transitionImageLayout(
+		depthImage,
+		depthFormat,
+		vk::ImageLayout::eUndefined,
+		vk::ImageLayout::eDepthStencilAttachmentOptimal
+	);
 }
 
 vk::Format

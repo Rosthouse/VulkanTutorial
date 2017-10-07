@@ -282,7 +282,7 @@ private:
     }
 
     bool hasStencilComponent(vk::Format format) {
-        return format == vk::Format::eD32Sfloat || format == vk::Format::eD32SfloatS8Uint;
+        return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint;
     }
 };
 
