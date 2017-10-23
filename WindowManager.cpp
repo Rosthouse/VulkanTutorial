@@ -1,5 +1,5 @@
 #include "WindowManager.h"
-#include "../HelloTriangleApplication.h"
+#include "HelloTriangleApplication.h"
 
 
 WindowManager::WindowManager()

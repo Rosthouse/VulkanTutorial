@@ -1,9 +1,6 @@
 #ifndef VULKAN_HELLOTRIANGLEAPPLICATION_H
 #define VULKAN_HELLOTRIANGLEAPPLICATION_H
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
 #include <vulkan/vulkan.hpp>
 
 #define GLM_FORCE_RADIANS
