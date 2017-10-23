@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(Vulkan)
 
-
 # Configuring application
 set(CMAKE_CXX_STANDARD 11)
 set(Vulkan_Tutorial_VERSION_MAJOR 1)
@@ -13,9 +12,6 @@ set(ENV{GLM_SDK} "F:/SDKs/GLM/glm-0.9.8.5" CACHE PATH)
 set(ENV{STB_SDK} "F:/SDKs/stb" CACHE PATH)
 set(ENV{TOL_SDK} "F:/SDKs/tinyobjloader" CACHE PATH)
 
-# Adding source files
-file(GLOB SOURCE_FILES "*.cpp" "*.h")
-
 # Finding libraries
 if (MSVC)
     find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK}/Source/lib32)
@@ -24,9 +20,6 @@ else ()
     find_library(VULKAN_LIB vulkan-1 PATHS $ENV{VULKAN_SDK})
     find_library(GLFW_LIB glfw3 PATHS $ENV{GLFW_SDK}/lib-mingw)
 endif ()
-
-MESSAGE(${VULKAN_LIB})
-MESSAGE(${GLFW_LIB})
 
 # Configuring file
 option(RH_ENABLE_VALIDATION_LAYERS "Use Validation Layers" ON)
@@ -38,6 +31,7 @@ configure_file(
 )
 
 # Adding subdirectory
+add_subdirectory(src)
 add_subdirectory(shaders)
 add_subdirectory(textures)
 add_subdirectory(models)
