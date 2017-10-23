@@ -162,7 +162,7 @@ vk::Extent2D HelloTriangleApplication::chooseSwapExtent(const vk::SurfaceCapabil
 	else
 	{
 		int width, height;
-		glfwGetWindowSize(window, &width, &height);
+		windomManager.getWindowSize(&width, &height);
 		vk::Extent2D actualExtent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 		actualExtent.width = std::max(capabilities.minImageExtent.width,
 		                              std::min(capabilities.maxImageExtent.width, actualExtent.width));
@@ -257,12 +257,7 @@ void HelloTriangleApplication::createSwapChain()
 
 void HelloTriangleApplication::createSurface()
 {
-	auto localSurface = VkSurfaceKHR(surface);
-	if (glfwCreateWindowSurface(VkInstance(instance), window, nullptr, &localSurface) != VK_SUCCESS)
-	{
-		throw std::runtime_error("Failed to create window surface");
-	}
-	surface = vk::SurfaceKHR(localSurface);
+	surface = windomManager.createSurface(instance);
 }
 
 void HelloTriangleApplication::createLogicalDevice()
@@ -573,13 +568,13 @@ void HelloTriangleApplication::cleanup()
 	instance.destroySurfaceKHR(surface, nullptr);
 	instance.destroy();
 
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	windomManager.shutDown();
+
 }
 
 void HelloTriangleApplication::mainLoop()
 {
-	while (!glfwWindowShouldClose(window))
+	while (!windomManager.shouldClose())
 	{
 		glfwPollEvents();
 		updateUniformBuffer();

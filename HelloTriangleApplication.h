@@ -21,6 +21,7 @@
 #include <set>
 #include <limits>
 #include <chrono>
+#include "WindowManager.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -37,10 +38,50 @@ const std::vector<const char *> deviceExtensions = {
 };
 
 class HelloTriangleApplication {
+
+	WindowManager windomManager;
+	vk::Instance instance;
+	VkDebugReportCallbackEXT callback;
+	vk::PhysicalDevice physicalDevice = VK_NULL_HANDLE;
+	vk::Device device;
+	vk::Queue graphicsQueue;
+	vk::Queue presentQueue;
+	vk::SurfaceKHR surface;
+	vk::SwapchainKHR swapChain;
+	std::vector<vk::Image> swapChainImages;
+	vk::Format swapChainImageFormat;
+	vk::Extent2D swapChainExtent;
+	std::vector<vk::ImageView> swapChainImageViews;
+	vk::RenderPass renderPass;
+	vk::DescriptorSetLayout descriptorSetLayout;
+	vk::PipelineLayout pipelineLayout;
+	vk::Pipeline graphicsPipeline;
+	std::vector<vk::Framebuffer> swapChainFramebuffers;
+	vk::CommandPool commandPool;
+	std::vector<vk::CommandBuffer> commandBuffers;
+	vk::Semaphore imageAvailableSemaphore;
+	vk::Semaphore renderFinishedSemaphore;
+	vk::Buffer vertexBuffer;
+	vk::DeviceMemory vertexBufferMemory;
+	vk::Buffer indexBuffer;
+	vk::DeviceMemory indexBufferMemory;
+	vk::Buffer uniformBuffer;
+	vk::DeviceMemory uniformBufferMemory;
+	vk::DescriptorPool descriptorPool;
+	vk::DescriptorSet descriptorSet;
+	vk::Image textureImage;
+	vk::DeviceMemory textureImageMemory;
+	vk::ImageView textureImageView;
+	vk::Sampler textureSampler;
+	vk::Image depthImage;
+	vk::DeviceMemory depthImageMemory;
+	vk::ImageView depthImageView;
+	Model model;
+
 public:
 
     void run() {
-        initWindow();
+		windomManager.init();
         initVulkan();
         mainLoop();
         cleanup();
@@ -59,60 +100,6 @@ public:
 
         return false;
     }
-
-
-private:
-    GLFWwindow *window;
-    vk::Instance instance;
-    VkDebugReportCallbackEXT callback;
-    vk::PhysicalDevice physicalDevice = VK_NULL_HANDLE;
-    vk::Device device;
-    vk::Queue graphicsQueue;
-    vk::Queue presentQueue;
-    vk::SurfaceKHR surface;
-    vk::SwapchainKHR swapChain;
-    std::vector<vk::Image> swapChainImages;
-    vk::Format swapChainImageFormat;
-    vk::Extent2D swapChainExtent;
-    std::vector<vk::ImageView> swapChainImageViews;
-    vk::RenderPass renderPass;
-    vk::DescriptorSetLayout descriptorSetLayout;
-    vk::PipelineLayout pipelineLayout;
-    vk::Pipeline graphicsPipeline;
-    std::vector<vk::Framebuffer> swapChainFramebuffers;
-    vk::CommandPool commandPool;
-    std::vector<vk::CommandBuffer> commandBuffers;
-    vk::Semaphore imageAvailableSemaphore;
-    vk::Semaphore renderFinishedSemaphore;
-    vk::Buffer vertexBuffer;
-    vk::DeviceMemory vertexBufferMemory;
-    vk::Buffer indexBuffer;
-    vk::DeviceMemory indexBufferMemory;
-    vk::Buffer uniformBuffer;
-    vk::DeviceMemory uniformBufferMemory;
-    vk::DescriptorPool descriptorPool;
-    vk::DescriptorSet descriptorSet;
-    vk::Image textureImage;
-    vk::DeviceMemory textureImageMemory;
-    vk::ImageView textureImageView;
-    vk::Sampler textureSampler;
-    vk::Image depthImage;
-    vk::DeviceMemory depthImageMemory;
-    vk::ImageView depthImageView;
-    Model model;
-
-
-    void initWindow() {
-        glfwInit();
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-
-        glfwSetWindowUserPointer(window, this);
-        glfwSetWindowSizeCallback(window, HelloTriangleApplication::onWindowResized);
-        glfwSetKeyCallback(window, HelloTriangleApplication::onKeyPressed);
-		glfwSetWindowCloseCallback(window, HelloTriangleApplication::onWindowClose);
-    }
-
 
     void createRenderPass();
 
@@ -222,26 +209,7 @@ private:
 
     void drawFrame();
 
-    void cleanupSwapChain();
-
-    static void onWindowResized(GLFWwindow *window, int width, int height) {
-        if (width == 0 || height == 0) return;
-
-        HelloTriangleApplication *app = reinterpret_cast<HelloTriangleApplication *>(glfwGetWindowUserPointer(window));
-        app->recreateSwapchain();
-    }
-
-	static void onWindowClose(GLFWwindow *window)
-    {
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-
-
-    static void onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-        }
-    }
+    void cleanupSwapChain();	
 
     uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties);
 

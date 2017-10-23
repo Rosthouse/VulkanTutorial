@@ -4,7 +4,8 @@ project(Vulkan)
 
 # Configuring application
 set(CMAKE_CXX_STANDARD 11)
-set(SOURCE_FILES main.cpp HelloTriangleApplication.cpp HelloTriangleApplication.h Vertex.h VulkanTutorialConfig.h.in)
+file(GLOB SOURCE_FILES "*.cpp" "*.h")
+#set(SOURCE_FILES main.cpp HelloTriangleApplication.cpp HelloTriangleApplication.h Vertex.h)
 #set(SOURCE_FILES main.cpp HelloTriangleApplication.h VulkanTutorialConfig.h.in)
 set(Vulkan_Tutorial_VERSION_MAJOR 1)
 set(Vulkan_Tutorial_VERSION_MINOR 0)
